@@ -1,0 +1,46 @@
+---
+title: "hw3_3"
+output: html_document
+---
+
+
+listOfGenes_trimmed <- str_replace(listOfGenes_version, pattern = ".[0-9]+$", replacement = "")      
+  
+
+listOfGenes_trimmed <- lapply(listOfGenes_version,  sub, pattern = "\\.\\d+$", replacement = "")
+
+```{r}
+ensembl=useMart("ensembl")
+
+ensembl = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+
+ensg = c('ENSG00000242268.2', 'ENSG00000158486.13')
+
+# get stable id
+ensg.no_version = sapply(strsplit(as.character(ensg),"\\."),"[[",1)
+```
+
+
+```{r}
+find.interval <- function(q.start, q.end, starts, ends) {cut.version.number(ensembl.id)}
+```
+
+```{r}
+ <- function() { System.time }
+start_time <- System.time()
+
+end_time <- System.time()
+end_time - start_time
+
+```
+2. Reading genome annotation in GTF format
+
+2.1 "The only exception in gene annotation is that the genes which are common to the human chromosome X and Y PAR regions can be found twice in the GENCODE GTF, while they are shown only for chromosome X in the Ensembl file."
+"The main difference is the underlying system/ontology for the annotation but also smaller differences in the format."
+"The GFF3 format is better described and allows for a richer annotation."
+
+2.2 
+
+
+References:
+https://www.ncbi.nlm.nih.gov/genbank/genomes_gff/
