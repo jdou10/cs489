@@ -1,0 +1,65 @@
+---
+title: "hw1"
+output: html_document
+---
+
+2.1 Write a function f1(x, y) to compute the sum of two numeric input vectors x and y using a for-loop.
+```{r}
+f1 <- function(x, y){
+  z <- vector("numeric", length(x))
+  for(i in 1:length(x)){
+    z[i]<-x[i]+y[i]
+  }
+  return (z)
+}
+```
+2.2 Write a function f2(x, y) to compute the sum of two numeric input vectors x and y using a vectorized operation without a loop.
+```{r}
+f2 <- function(x,y){
+  z <- x + y
+return (z)}
+```
+2.4 Use the following plot function to visualize the runtime difference of the two functions on input pairs of varying lengths. 
+```{r}
+plot.runtime <- function(ns, t.loop, t.vectorized)
+{
+  plot(ns, t.loop, ylim=c(0, max(t.loop)), col="red3", 
+       type="b", panel.first=grid(), lwd=2,
+       xlab="Input vector length",
+       ylab="Time (second)")
+  lines(ns, t.vectorized, col="royalblue", type="b", lwd=2)
+  legend("topleft", c("for-loop", "vectorized"), 
+         col=c("red3", "royalblue"), lwd=1)
+}
+```
+2.3 Create two vectors of variable lengths as input to the function.
+```{r}
+ns <- c(1000000, 10000000)
+t.loop <- c(0,0)
+t.vectorized <- c(0,0)
+for(i in 1:2){
+x <- rnorm(ns[i])
+y <- rnorm(ns[i])
+t.loop[i] <- system.time(f1(x, y))[1]
+t.vectorized[i] <- system.time(f2(x, y))[1]
+}
+plot.runtime(ns, t.loop, t.vectorized)
+print(t.loop)
+print(t.vectorized)
+```
+2.5 Project the runtime that would be taken for vectors of 10 billion elements for each method on your computer. How much time will you have saved using the vectorized operation instead of a for-loop?
+
+vectorized operation is approximate 20.33 times faster than for-loop.
+
+2.6 Conclude what you will do in the future when adding two vectors. Will it generalize to multiplying two vectors?
+
+I will use vectorized operation when adding two vectors in the future. Yes, it will generalize to multiplying two vectors.
+
+3.1 Please explain in your own words two or more types of biological data that involve intervals. Describe the biological meaning of each type and why their data involve intervals. If you use Wikipedia or other publications, please cite the source in your answer.
+
+GRanges: GRanges is one of biological data that involve intervals. It is used for storing genomic intervals. It is also very fast and efficient to use. "The key insight is that many institutes in genomics can be thought of as intervals or have sets of intervals of integers." (https://www.youtube.com/watch?v=ET7NBhXZEoI) 
+
+Promoter: "a promoter is a sequence of DNA to which proteins bind to initiate transcription of a single RNA transcript from the DNA downstream of the promoter. The RNA transcript may encode a protein (mRNA), or can have a function in and of itself, such as tRNA or rRNA. Promoters are located near the transcription start sites of genes, upstream on the DNA. Promoters can be about 100–1000 base pairs long, the sequence of which is highly dependent on the gene and product of transcription, type or class of RNA polymerase recruited to the site, and species of organism."(https://en.wikipedia.org/wiki/Promoter_(genetics))
+
+
+

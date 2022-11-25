@@ -1,0 +1,44 @@
+---
+title: "hw4_4"
+output: html_document
+---
+ID=ENSG00000223972.5;
+gene_id=ENSG00000223972.5;
+transcript_id=ENSG00000223972.5;
+gene_type=transcribed_unprocessed_pseudogene;
+gene_status=KNOWN;gene_name=DDX11L1;
+transcript_type=transcribed_unprocessed_pseudogene; 
+transcript_status=KNOWN;transcript_name=DDX11L1;level=2;
+havana_gene=OTTHUMG00000000961.2
+
+```{r}
+
+cat("Loading gff3 ...\n")
+time <- system.time(
+  gff3 <- read.table(
+    "../03-R-RegExp/gencode.v39.annotation.gff3.gz", header=FALSE, sep="\t", 
+    nrows=20000, stringsAsFactors = FALSE, 
+    col.names = c("seqid", "source", "type", "start", "end", 
+                  "score", "strand", "phase", "tag") ) )
+print(time["user.self"])
+
+```
+
+
+
+```{r}
+cat("Parsing gene_names by vectorization ...\n")
+time.vec <- system.time({
+  pattern <- "gene_name=([^;]*)"
+  m <- regexec(pattern, gff3[, "tag"])
+  gene_names <- sapply(
+    regmatches(gff3[, "tag"], m), 
+    function(e) {return(e[2])}) 
+  #
+  # Very slow alternative to extract gene names:    
+  #   d <- data.frame(regmatches(gff3[, "tag"], m))    
+  #   gene_names <- d[2, ]  
+  } )
+print(time.vec["user.self"])
+```
+

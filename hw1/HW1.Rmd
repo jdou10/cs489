@@ -1,0 +1,115 @@
+---
+title: "HW1"
+author: "Kelsey Corro"
+date: "January 27, 2022"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+2. For-loop versus vectorized operations
+
+2.1 Write a function f1( x, y ) to compute the sum of two numeric input vectors x and y using a for-loop.
+
+```{r}
+# write function with loop
+f1 <- function( x, y ) {
+  
+  # create vector to store sum of vectors
+  sumVector <- rep( c( 0 ), each = length( x ) )
+  
+  for ( element in 1:length( x ) ) {
+    sumVector[ element ] <- x[ element ] + y[ element ]
+  } # end for
+  
+  sumVector
+} # end function
+```
+
+
+2.2 Write a function f1( x, y ) to compute the sum of two numeric input vectors x and y using a vectorized operation without a loop.
+
+```{r}
+f2 <- function( x, y ){
+  x + y
+}
+```
+
+
+2.3 Use what you have learned in class to create two vectors of variable lengths as input to the function. Record the runtime of the function by system.time( f1 ( x, y )) [1]
+
+```{r}
+# create vectors x and y
+x <- c( 1 : 1000000 )
+y <- x
+
+# calculate and record the run time of the functions
+print( system.time( f1( x, y )) [ 1 ] )
+```
+
+
+2.4 Use the following plot function to visualize the runtime difference of the two functions on input pairs of varying lengths. Here, ns contains the input lengths of different trials; t.loop is a vector of runtime for the for-loop solution for each trial; t.vectorized is a vector of runtime for the vectorized solution for each trial. You are also welcome to write your own visualization code.
+
+```{r}
+plot.runtime <- function(ns, t.loop, t.vectorized)
+{
+  plot(ns, t.loop, ylim=c(0, max(t.loop)), col="red3", 
+       type="b", panel.first=grid(), lwd=2,
+       xlab="Input vector length",
+       ylab="Time (millisecond)")
+  lines(ns, t.vectorized, col="royalblue", type="b", lwd=2)
+  legend("topleft", c("for-loop", "vectorized"), 
+         col=c("red3", "royalblue"), lwd=1)
+}
+```
+
+
+2.5 Project the runtime that would be taken for vectors of 10 billion elements for each method on your computer. How much time will you have saved using the vectorized operation instead of a for-loop?
+
+```{r}
+# Create vector to store input lengths of different trials
+z <- c( 10, 100, 1000, 10000, 100000, 1000000, 10000000 )
+
+# Create vector to store runtimes of f1 for elements of vector z
+f1Times <- rep( c( 0 ), each = length( z ) )
+
+# Use a for loop to fill in elements of f1Times with the amount of time it takes f1 to execute depending on amount of elements ( indicated in vector z)
+for ( element in 1 : length( z )) {
+  tempVector <- c( 1: z[ element ])
+  f1Times [ element ] <- system.time( f1( tempVector, tempVector )) [ 1 ]
+}
+
+# Create vector to store runtimes of f2 for elements of vector z
+f2Times <- rep( c( 0 ), each = length( z ) )
+
+# Use a for loop to fill in elements of f2Times with the amount of time it takes f1 to execute depending on amount of elements ( indicated in vector z)
+for ( element in 1 : length( z )) {
+  tempVector <- c( 1: z[ element ])
+  f2Times [ element ] <- system.time( f2( tempVector, tempVector )) [ 1 ]
+}
+
+plot.runtime( z , f1Times, f2Times )
+
+```
+```{r}
+# Print out time it takes (in milliseconds) to compute the sum of 2 vectors with 10000000 elements using a for loop (function f1)
+print ( f1Times[ 7 ] )
+
+# Print out time it takes (in milliseconds) to compute the sum of 2 vectors with 10000000 elements using vectorized operation without a loop (function f2)
+print ( f2Times[ 7 ] )
+
+```
+Based off this plot, it would take about 900 milliseconds (on my computer) to add 2 vectors together with a size of 10 billion elements using a for loop, while it would only take about 20 milliseconds to add 2 vectors together with a size of 10 billion elements using a vectorized operations.
+Using vectorized operations is almost 50 times faster than using a for loop to execute the same calculation.
+
+
+2.6 Conclude what you will do in the future when adding two vectors. Will it generalize to multiplying two vectors?
+
+The code required to add to vectors is a lot more efficient without a for loop. It is also more time efficient, so in the future, vectorized operations will be used for efficiency.
+
+
+3.1 Please explain in your own words two or more types of biological data that involve intervals. Describe the biological meaning of each type and why their data involve intervals. If you use Wikipedia or other publications, please cite the source in your answer.
+
+SNPs - Single Nucleotide Polymorphisms are nucleotides in the DNA sequence that differ from the known wild type or differ from the nucleotide that is most commonly found in the genetic location. This type of data would involve intervals because SNPs can be found within a gene which are located on chromosomes where intervals are involved.
+
+A Promoter is where proteins bind to a sequence of DNA to initiate transcription of a single RNA transcript from the DNA ( https://en.wikipedia.org/wiki/Promoter_(genetics) ) This type of data would involve intervals because it is a sequence of DNA in which it would be a set of integers.
