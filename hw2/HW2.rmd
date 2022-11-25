@@ -1,0 +1,276 @@
+---
+title: "HW2"
+author: "Kelsey Corro"
+date: "February 7, 2022"
+output: html_document
+---
+
+```{r}
+# Create object (dataframe) containing contents of GENCODE
+setwd("C:/Users/kelse/OneDrive/Desktop/NMSU/03_Spring 2022/CS 489 - Bioinformatics/Assignments")
+gencode <- read.table( file = "gencode.v39.annotation.gff3.gz" )
+```
+
+1. Numbers of genes on each chromosome
+Visualize using bar plot (function barplot()) the total number of genes on each chromosome (1-22, X, Y). Report the chromosomes with the min and max number of genes.
+```{r}
+# Create data frame which only contains genes
+genes <- gencode [ which ( gencode$V3 == "gene" ), ]
+
+# Create vector containing chromosomes
+chromosomes <- c( 1:22, "X", "Y" )
+
+# Add "chr" in front of all elements in chromosomes vector
+chromosomes <- paste0( "chr", chromosomes )
+
+# Create vector containing number of genes for each chromosome
+# All elements will be 0 
+numGenesVector <- rep( c( 0 ), each = length( chromosomes ) )
+
+# Count number of genes in chromosome and store values in numGenesVector
+for ( element in 1:length( chromosomes ) ) {
+  numGenes <- genes [ which ( genes$V1 == chromosomes [ element ] ), ]
+  numGenesVector[ element ] <- nrow( numGenes )
+}
+
+# Combine chromosomes vector and numGenesVector into a dataframe
+numGenes <- data.frame( chromosomes, numGenesVector )
+
+# Create barplot
+barplot( numGenes$numGenesVector, main = "Genes on Chromosomes", xlab = "Chromosome", ylab = "Number of Genes", names.arg = chromosomes )
+
+# Find which chromosome has the minimum number of genes
+minChromosome <- numGenes [ which ( numGenes$numGenesVector == min(numGenes$numGenesVector ) ), ]
+minChromosome
+
+# Find which chromosome has the maximum number of genes
+maxChromosome <- numGenes [ which ( numGenes$numGenesVector == max(numGenes$numGenesVector ) ), ]
+maxChromosome
+```
+The chromosome with the minimum number of genes is chromosome Y with 568 genes.
+The chromosome with the maximum number of genes is chromosome 1 with 5557 genes.
+
+
+
+2. Gene density on each chromosome
+Visualize the density of genes on each chromosome. Density is defined by the total number of genes divided by the length of the chromosome. You can use the maximum end coordinate value to approximate the length of a chromosome. Point out the chromosomes with the minimum and maximum gene density, respectively.
+```{r}
+# Create a vector that will contain the lengths of the chromosomes
+chromLengths <- rep( c( 0 ), each = length( chromosomes ) )
+
+# Store the maximum end coordinate value of the chromosome into the chromLengths vector
+for ( element in 1:length( chromosomes ) ) {
+  numGenes <- genes [ which ( genes$V1 == chromosomes [ element ] ), ]
+  maxEndCoordinate <- numGenes [ which ( numGenes$V5 == max(numGenes$V5 ) ), ]
+  chromLengths[ element ] <- maxEndCoordinate[ , 5 ]
+}
+
+# Determine density by dividing the number of genes in a chromosome by the length of the chromosome and store in geneDensity vector
+geneDensity <- numGenesVector / chromLengths
+
+# Combine chromosomes vector and geneDensity vectors into a dataframe
+geneDensitydf <- data.frame( chromosomes, geneDensity )
+
+# Visualize data by creating a barplot
+barplot( geneDensitydf$geneDensity, main = "Gene Density of Chromosomes", xlab = "Chromosome", ylab = "Gene Density", names.arg = chromosomes )
+
+# Find which chromosome has the minimum gene density
+minChromosome <- geneDensitydf [ which ( geneDensitydf$geneDensity == min(geneDensitydf$geneDensity ) ), ]
+minChromosome
+
+# Find which chromosome has the maximum gene density
+maxChromosome <- geneDensitydf [ which ( geneDensitydf$geneDensity == max(geneDensitydf$geneDensity ) ), ]
+maxChromosome
+```
+The chromosome with the minimum gene density is chromosome Y with an approximate gene density of 9.928e-06.
+The chromosome with the maximum gene density is chromosome 19 with an approximate gene density of 5.150e-05.
+
+
+
+3. Numbers and density of transcripts on each chromosome.
+Repeat 1 and 2 for transcripts.
+```{r}
+# Create data frame which only contains transcripts 
+transcripts <- gencode [ which ( gencode$V3 == "transcript" ), ]
+
+# Vector containing chromosomes has already been created in 1.
+
+# Create vector containing number of transcripts for each chromosome
+# All elements will be 0 
+numTranscriptsVector <- rep( c( 0 ), each = length( chromosomes ) )
+
+# Count number of transcripts in chromosome and store values in numTranscriptsVector
+for ( element in 1:length( chromosomes ) ) {
+  numTranscripts <- transcripts [ which ( transcripts$V1 == chromosomes [ element ] ), ]
+  numTranscriptsVector[ element ] <- nrow( numTranscripts )
+}
+
+# Combine chromosomes vector and numTranscriptsVector into a dataframe
+numTranscripts <- data.frame( chromosomes, numTranscriptsVector )
+
+# Create barplot
+barplot( numTranscripts$numTranscriptsVector, main = "Transcripts on Chromosomes", xlab = "Chromosome", ylab = "Number of Transcripts", names.arg = chromosomes )
+
+# Find which chromosome has the minimum number of transcripts
+minChromosome <- numTranscripts [ which ( numTranscripts$numTranscriptsVector == min(numTranscripts$numTranscriptsVector ) ), ]
+minChromosome
+
+# Find which chromosome has the maximum number of transcripts
+maxChromosome <- numTranscripts [ which ( numTranscripts$numTranscriptsVector == max(numTranscripts$numTranscriptsVector ) ), ]
+maxChromosome
+```
+The chromosome with the minimum number of transcripts is chromosome Y with 1010 transcripts.
+The chromosome with the maximum number of transcripts is chromosome 1 with 21577 transcripts.
+
+
+
+```{r}
+# Vector containing chromosome lengths has already been created in 2.
+
+# Determine density by dividing the number of transcripts in a chromosome by the length of the chromosome and store in transcriptDensity vector
+transcriptDensity <- numTranscriptsVector / chromLengths
+
+# Combine chromosomes vector and transcriptDensity vectors into a dataframe
+transcriptDensitydf <- data.frame( chromosomes, transcriptDensity )
+
+# Visualize data by creating a barplot
+barplot( transcriptDensitydf$transcriptDensity, main = "Transcript Density of Chromosomes", xlab = "Chromosome", ylab = "Transcript Density", names.arg = chromosomes )
+
+# Find which chromosome has the minimum transcript density
+minChromosome <- transcriptDensitydf [ which ( transcriptDensitydf$transcriptDensity == min(transcriptDensitydf$transcriptDensity ) ), ]
+minChromosome
+
+# Find which chromosome has the maximum transcript density
+maxChromosome <- transcriptDensitydf [ which ( transcriptDensitydf$transcriptDensity == max(transcriptDensitydf$transcriptDensity ) ), ]
+maxChromosome
+```
+The chromosome with the minimum transcript density is chromosome Y with a transcript density of 1.765e-05.
+The chromosome with the maximum transcript density is chromosome 19 with a transcript density of 0.0002400.
+
+
+
+4. Numbers and density of CDSs on each chromosome
+Repeat 1 and 2 for CDS.
+```{r}
+# Create data frame which only contains CDSs
+cdss <- gencode [ which ( gencode$V3 == "CDS" ), ]
+
+# Vector containing chromosomes has already been created in 1.
+
+# Create vector containing number of CDSs for each chromosome
+# All elements will be 0 
+numCDSVector <- rep( c( 0 ), each = length( chromosomes ) )
+
+# Count number of CDSs in chromosome and store values in numCDSVector
+for ( element in 1:length( chromosomes ) ) {
+  numCDS <- cdss [ which ( cdss$V1 == chromosomes [ element ] ), ]
+  numCDSVector[ element ] <- nrow( numCDS )
+}
+
+# Combine chromosomes vector and numCDSVector into a dataframe
+numCDS <- data.frame( chromosomes, numCDSVector )
+
+# Create barplot
+barplot( numCDS$numCDSVector, main = "CDSs on Chromosomes", xlab = "Chromosome", ylab = "Number of CDSs", names.arg = chromosomes )
+
+# Find which chromosome has the minimum number of CDSs
+minChromosome <- numCDS [ which ( numCDS$numCDSVector == min(numCDS$numCDSVector ) ), ]
+minChromosome
+
+# Find which chromosome has the maximum number of CDSs 
+maxChromosome <- numCDS [ which ( numCDS$numCDSVector == max(numCDS$numCDSVector ) ), ]
+maxChromosome
+```
+The chromosome with the minimum number of CDSs is chromosome Y with 2001 CDSs.
+The chromosome with the maximum number of CDSs is chromosome 1 with 78738 CDSs.
+
+
+
+```{r}
+# Vector containing chromosome lengths has already been created in 2.
+
+# Determine density by dividing the number of CDSs in a chromosome by the length of the chromosome and store in cdsDensity vector
+cdsDensity <- numCDSVector / chromLengths
+
+# Combine chromosomes vector and cdsDensity vectors into a dataframe
+cdsDensitydf <- data.frame( chromosomes, cdsDensity )
+
+# Visualize data by creating a barplot
+barplot( cdsDensitydf$cdsDensity, main = "CDS Density of Chromosomes", xlab = "Chromosome", ylab = "CDS Density", names.arg = chromosomes )
+
+# Find which chromosome has the minimum CDS density
+minChromosome <- cdsDensitydf [ which ( cdsDensitydf$cdsDensity == min(cdsDensitydf$cdsDensity ) ), ]
+minChromosome
+
+# Find which chromosome has the maximum CDS density
+maxChromosome <- cdsDensitydf [ which ( cdsDensitydf$cdsDensity == max(cdsDensitydf$cdsDensity ) ), ]
+maxChromosome
+```
+The chromosome with the minimum CDS density is chromosome Y with a CDS density of 3.497e-05.
+The chromosome with the maximum CDS density is chromosome 19 with a CDS density of 0.0008037.
+
+
+
+5. Overall statistics
+
+5.1 How many intervals are annotated in this version?
+```{r}
+# Extract number of rows in downloaded file
+nrow( gencode )
+```
+According to the file extraction, 3,238,846 intervals were annotated in this version.
+
+5.2 What is the total number of genes annotated in the human genome?
+```{r}
+# Extract number of rows from gene dataframe
+nrow( genes )
+```
+The total number of genes annotated in the human genome are 61,533 genes.
+
+5.3 How many are protein coding genes?
+```{r}
+# Create an object that will contain the number of protein coding genes
+# Set to 0
+proteinCodingGenesCount <- 0
+
+# Using a for loop, go through each row of the genes dataframe
+for ( row in 1:nrow( genes )){
+  
+  # Extract column 9 from each row and split it into a list by using the ";" as the separator
+  col9 <- strsplit( genes[ row, 9], split = ";" )
+  
+  # The gene_type is the 3rd element of the list
+  # Use an if statement to check if the gene type is protein coding
+  if ( col9[[1]][3] == "gene_type=protein_coding")
+    proteinCodingGenesCount <- proteinCodingGenesCount + 1
+}
+
+# Display number of protein coding genes
+proteinCodingGenesCount
+```
+There are 19,982 protein coding genes.
+
+5.4 How many are noncoding genes?
+```{r}
+# Create an object that will contain the number of noncoding genes
+# Set to 0
+nonCodingGenesCount <- 0
+
+# Using a for loop, go through each row of the genes dataframe
+for ( row in 1:nrow( genes )){
+  
+  # Extract column 9 from each row and split it into a list by using the ";" as the separator
+  col9 <- strsplit( genes[ row, 9], split = ";" )
+  
+  # The gene_type is the 3rd element of the list
+  # Use an if statement to check if the gene type is noncoding
+  if ( col9[[1]][3] != "gene_type=protein_coding" )
+    nonCodingGenesCount <- nonCodingGenesCount + 1
+}
+
+# Display number of protein coding genes
+nonCodingGenesCount
+```
+There are 41,551 noncoding genes.
+
+Note: I initially tried to run the code to see if there were any matches for "gene_type=non_coding", but unfortunately kept getting a result of 0 (which I know is incorrect). My logic with this code was to extract all genes that were not "gene_type=protein_coding" because I was assuming that if the gene_type was not a protein_coding, then it must be non_coding.

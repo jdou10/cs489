@@ -1,0 +1,33 @@
+---
+title: "hw2"
+output: html_document
+---
+
+1. Numbers of genes on each chromosome
+```{r}
+chromosome <- c(chromosome.for["user.self"], chromosome.apply["user.self"], 
+          chromosome.vec["user.self"])
+names(chromosome) <- c("for", "apply", "vectorization")
+barplot(chromosome, main="Extracting gene names from GFF3 file",
+        xlab="Method", ylab="Time (second)", panel.first=grid())
+```
+2. Gene density on each chromosome
+```{r}
+
+```
+3. Numbers and density of transcripts on each chromosome
+```{r}
+
+```
+4. Numbers and density of CDSs on each chromosome
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
